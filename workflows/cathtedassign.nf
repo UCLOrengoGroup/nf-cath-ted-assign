@@ -4,6 +4,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+include { PREPARE_INPUT          } from '../subworkflows/local/prepare_input/main.nf'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -26,8 +27,17 @@ workflow CATHTEDASSIGN {
 
     main:
 
+    // Remove ch_version if not used
     def ch_versions = channel.empty()
     def ch_multiqc_files = channel.empty()
+
+    //
+    // Subworkflow: PREPARE_INPUT
+    //
+
+    PREPARE_INPUT (
+        ch_samplesheet
+     )
 
     //
     // Collate and save software versions
