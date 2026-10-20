@@ -211,7 +211,15 @@
                     "type": "integer",
                     "default": 5,
                     "minimum": 1,
-                    "description": "Number of structures per chunk.",
+                    "description": "Number of structures per chunk for validation and renumbering.",
+                    "fa_icon": "fas fa-layer-group"
+                },
+                "heavy_chunk_size": {
+                    "type": "integer",
+                    "default": 5,
+                    "minimum": 1,
+                    "description": "Number of structures per chunk for domain segmentation.",
+                    "help_text": "Accepted structures are re-chunked within each ZIP archive from shortest to longest. Within a chunk the longest structure comes first, so a chunk that runs out of memory fails early.",
                     "fa_icon": "fas fa-layer-group"
                 },
                 "max_entries": {

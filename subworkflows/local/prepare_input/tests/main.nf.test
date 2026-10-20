@@ -13,7 +13,7 @@ nextflow_workflow {
     tag "filterpdb"
     tag "getuniprot"
 
-    test("predicted and experimental zips - chunk size 2") {
+    test("predicted and experimental zips - chunk sizes 2") {
 
         when {
             params {
@@ -27,9 +27,10 @@ nextflow_workflow {
                     [ [ id:'experimental_set1', structure_type:'experimental' ], file(params.pipelines_testdata_base_path + 'prepare_input/experimental_set1.zip', checkIfExists: true) ]
                 )
                 input[1] = 2
-                input[2] = null
-                input[3] = 25
-                input[4] = 1500
+                input[2] = 2
+                input[3] = null
+                input[4] = 25
+                input[5] = 1500
                 """
             }
         }
@@ -68,9 +69,10 @@ nextflow_workflow {
                     [ [ id:'experimental_set1', structure_type:'experimental' ], file(params.pipelines_testdata_base_path + 'prepare_input/experimental_set1.zip', checkIfExists: true) ]
                 )
                 input[1] = 2
-                input[2] = 3
-                input[3] = 25
-                input[4] = 1500
+                input[2] = 2
+                input[3] = 3
+                input[4] = 25
+                input[5] = 1500
                 """
             }
         }

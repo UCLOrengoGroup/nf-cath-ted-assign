@@ -1,0 +1,4 @@
+# Lint the Python scripts for real errors only (syntax errors, undefined names, unused imports).
+# Style rules stay off so bin/ remains easy to compare with the upstream domain-annotation-pipeline scripts.
+[lint]
+select = ["E9", "F"]

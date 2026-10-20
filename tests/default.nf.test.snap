@@ -5,6 +5,9 @@
                 "CHUNKBYZIP": {
                     "python": "3.13.16"
                 },
+                "CHUNKBYZIP_HEAVY": {
+                    "python": "3.13.16"
+                },
                 "CREATEINPUTZIP": {
                     "python": "3.13.16"
                 },
@@ -61,7 +64,7 @@
                 "experimental_set1_0.renumber_errors.tsv:md5,33b80ecec90caab9c91cdd73bd6fa44a"
             ]
         ],
-        "timestamp": "2026-10-18T21:41:28.545299",
+        "timestamp": "2026-10-19T08:38:37.472637",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

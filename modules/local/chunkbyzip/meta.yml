@@ -39,7 +39,9 @@ output:
             e.g. `[ id:'predicted_set1', structure_type:'predicted' ]`
       - ${prefix}.tsv:
           type: file
-          description: TSV with header (chunk_id, chunk_file, zip_name) describing every chunk
+          description: |
+            TSV with header (chunk_id, chunk_file, zip_name, max_residues) describing every chunk.
+            max_residues is the residue count of the chunk's longest structure, empty without residue counts
           pattern: "*.tsv"
           ontologies:
             - edam: http://edamontology.org/format_3475

@@ -25,7 +25,12 @@ input:
       pattern: "*.zip"
   - chunk_size:
       type: integer
-      description: Maximum number of structures per chunk
+      description: Maximum number of structures per chunk for validation and renumbering
+  - heavy_chunk_size:
+      type: integer
+      description: |
+        Maximum number of structures per segmentation chunk. Accepted structures are
+        re-chunked within each ZIP archive from shortest to longest, longest first within a chunk
   - max_entries:
       type: integer
       description: Maximum number of structures to process, selected in ID order; null processes all
@@ -39,10 +44,11 @@ output:
   - structures:
       type: file
       description: |
-        Accepted structure IDs per chunk with the ZIP archive to read them from
+        Segmentation chunks of accepted structure IDs with the ZIP archive to read them from
         (the renumbered archive for experimental structures)
-        Structure: [ val(meta), path(filtered_ids), path(zip) ], meta: [ id, structure_type, chunk_id ]
-      pattern: "*.{filtered_ids.txt,zip}"
+        Structure: [ val(meta), path(ids), path(zip) ], meta: [ id, structure_type, chunk_id, max_residues ]
+        (max_residues: residue count of the chunk's longest structure)
+      pattern: "*.{txt,zip}"
   - filter_metadata:
       type: file
       description: |

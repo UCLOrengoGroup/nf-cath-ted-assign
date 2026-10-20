@@ -2,7 +2,6 @@
 
 import csv
 import gemmi
-import sys
 import argparse
 import tempfile
 import zipfile

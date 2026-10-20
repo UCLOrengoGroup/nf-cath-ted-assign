@@ -1,15 +1,17 @@
-include { CREATEINPUTZIP } from '../../../modules/local/createinputzip/main'
-include { CHUNKBYZIP     } from '../../../modules/local/chunkbyzip/main'
-include { RENUMBERPDB    } from '../../../modules/local/renumberpdb/main'
-include { FILTERPDB      } from '../../../modules/local/filterpdb/main'
-include { GETUNIPROT     } from '../../../modules/local/getuniprot/main'
+include { CREATEINPUTZIP                 } from '../../../modules/local/createinputzip/main'
+include { CHUNKBYZIP                     } from '../../../modules/local/chunkbyzip/main'
+include { CHUNKBYZIP as CHUNKBYZIP_HEAVY } from '../../../modules/local/chunkbyzip/main'
+include { RENUMBERPDB                    } from '../../../modules/local/renumberpdb/main'
+include { FILTERPDB                      } from '../../../modules/local/filterpdb/main'
+include { GETUNIPROT                     } from '../../../modules/local/getuniprot/main'
 
 workflow PREPARE_INPUT {
 
     take:
     ch_zip_file    // channel: [ val(meta), path(zip) ], meta: [ id, structure_type ]
-    chunk_size     // integer: maximum number of structures per chunk
-    max_entries    // integer: maximum number of structures to process, or null for all
+    chunk_size       // integer: maximum number of structures per chunk for validation and renumbering
+    heavy_chunk_size // integer: maximum number of structures per segmentation chunk
+    max_entries      // integer: maximum number of structures to process, or null for all
     min_residues   // integer: structures with this many residues or fewer are rejected
     max_residues   // integer: structures with this many residues or more are rejected
 
@@ -90,8 +92,50 @@ workflow PREPARE_INPUT {
     //
     GETUNIPROT ( ch_chunks.predicted.map { meta, ids, _zip -> [ meta, ids ] } )
 
+    // Per sample, a TSV of accepted structure ID, zip name and residue count: [ val(meta), path(tsv) ]
+    // The zip is the input zip, or for experimental structures the renumbered zip of their chunk
+    def ch_filtered_ids_mapping = FILTERPDB.out.metadata
+        .flatMap { meta, metadata ->
+            metadata.splitCsv(header: true, sep: '\t')
+                .findAll { row -> row.status == 'accepted' }
+                .collect { row -> [ meta.id, "${row.pdb_id}\t${row.zip_name}\t${row.residue_count}" ] }
+        }
+        .collectFile(sort: true, newLine: true) { id, row -> [ "${id}.filtered_ids_mapping.tsv", row ] }
+        .map { tsv -> [ tsv.name - '.filtered_ids_mapping.tsv', tsv ] }
+        .join( ch_zips.map { id, meta, _zip -> [ id, meta ] } )
+        .map { _id, tsv, meta -> [ meta, tsv ] }
+
+    //
+    // MODULE: Re-chunk accepted structures for segmentation, filled from shortest to longest
+    //
+    CHUNKBYZIP_HEAVY ( ch_filtered_ids_mapping, heavy_chunk_size )
+
+    // Zips that segmentation chunks read from, keyed by sample ID and file name: [ val(id), val(zip_name), path(zip) ]
+    def ch_zips_by_name = ch_to_filter
+        .map { meta, _ids, zip -> [ meta.id, zip.name, zip ] }
+        .unique()
+
+    // One item per segmentation chunk, with the chunk index and the residue count of its longest
+    // structure (used to size segmentation resources) added to meta: [ val(meta), path(ids), path(zip) ]
+    def ch_heavy_chunks = CHUNKBYZIP_HEAVY.out.tsv
+        .join( CHUNKBYZIP_HEAVY.out.chunk_folder )
+        .flatMap { meta, mapping, chunk_files ->
+            def chunk_files_by_name = chunk_files.collectEntries { chunk_file -> [ chunk_file.name, chunk_file ] }
+            // Mapping columns: chunk_id, chunk_file, zip_name, max_residues
+            mapping.splitCsv(header: true, sep: '\t').collect { row ->
+                [
+                    meta.id,
+                    row.zip_name,
+                    meta + [ chunk_id: row.chunk_id.toInteger(), max_residues: row.max_residues.toInteger() ],
+                    chunk_files_by_name[ row.chunk_file.tokenize('/')[-1] ]
+                ]
+            }
+        }
+        .combine( ch_zips_by_name, by: [ 0, 1 ] )
+        .map { _id, _zip_name, meta, ids, zip -> [ meta, ids, zip ] }
+
     emit:
-    structures      = FILTERPDB.out.ids.join( ch_to_filter.map { meta, _ids, zip -> [ meta, zip ] } ) // channel: [ val(meta), path(filtered_ids), path(zip) ]
+    structures      = ch_heavy_chunks         // channel: [ val(meta), path(ids), path(zip) ], segmentation chunks of accepted structures
     filter_metadata = FILTERPDB.out.metadata  // channel: [ val(meta), path(tsv) ]
     resmaps         = RENUMBERPDB.out.resmaps // channel: [ val(meta), path(zip) ]
     renumber_errors = RENUMBERPDB.out.errors  // channel: [ val(meta), path(tsv) ]

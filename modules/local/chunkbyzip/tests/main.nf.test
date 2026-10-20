@@ -33,6 +33,35 @@ nextflow_process {
         }
     }
 
+    // With residue counts, chunks fill from shortest to longest and each chunk lists its longest structure first
+    test("predicted_set1 - accepted structures with residue counts - chunk size 2") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = channel.of('A0A003\tpredicted_set1.zip\t340', 'A0A009DWJ5\tpredicted_set1.zip\t47', 'A0A009DYA3\tpredicted_set1.zip\t50')
+                    .collectFile(name: 'predicted_set1.filtered_ids_mapping.tsv', newLine: true, sort: true)
+                    .map { tsv -> [ [ id:'predicted_set1', structure_type:'predicted' ], tsv ] }
+                input[1] = 2
+                """
+            }
+        }
+
+        then {
+            def chunks = process.out.chunk_folder[0][1].collect { chunk -> path(chunk).readLines() }
+            assertAll(
+                { assert process.success },
+                { assert chunks == [ ['A0A009DYA3', 'A0A009DWJ5'], ['A0A003'] ] },
+                // max_residues column: the longest structure in each chunk
+                { assert path(process.out.tsv[0][1]).readLines().drop(1).collect { line -> line.split('\t')[-1] } == ['50', '340'] },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
     test("predicted_set1 - three structures - chunk size 2 - stub") {
 
         options "-stub"

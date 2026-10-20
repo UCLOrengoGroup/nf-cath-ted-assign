@@ -21,6 +21,7 @@ workflow CATHTEDASSIGN {
     take:
     ch_samplesheet // channel: samplesheet read in from --input
     chunk_size
+    heavy_chunk_size
     max_entries
     min_chain_residues
     max_chain_residues
@@ -40,6 +41,7 @@ workflow CATHTEDASSIGN {
     PREPARE_INPUT (
         ch_samplesheet,
         chunk_size,
+        heavy_chunk_size,
         max_entries,
         min_chain_residues,
         max_chain_residues,

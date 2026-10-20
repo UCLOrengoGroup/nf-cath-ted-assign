@@ -1,0 +1,34 @@
+name: Python tests
+# Lint and unit-test the Python scripts in bin/ (not part of the nf-core template)
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Cancel if a newer run is started
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.13"
+
+      # Library versions match the modules' environment.yml files
+      - name: Install dependencies
+        run: pip install ruff==0.17.1 pytest==9.1.1 gemmi==0.7.5 pandas==2.3.3 requests==2.34.2
+
+      - name: Lint (ruff)
+        run: ruff check bin/ tests/bin/
+
+      - name: Test (pytest)
+        run: pytest -p no:cacheprovider tests/bin

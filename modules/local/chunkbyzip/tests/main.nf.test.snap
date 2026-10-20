@@ -1,4 +1,71 @@
 {
+    "predicted_set1 - accepted structures with residue counts - chunk size 2": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "predicted_set1",
+                            "structure_type": "predicted"
+                        },
+                        "predicted_set1.tsv:md5,4ef2a9d19d639fc2e3c93681bec4c84c"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "predicted_set1",
+                            "structure_type": "predicted"
+                        },
+                        [
+                            "predicted_set1_ids_mapping.0.txt:md5,5930db3137182faeca751bd4b568b8ca",
+                            "predicted_set1_ids_mapping.1.txt:md5,14ab986ef866ea0c24d5506bcd52906d"
+                        ]
+                    ]
+                ],
+                "2": [
+                    [
+                        "CHUNKBYZIP",
+                        "python",
+                        "3.13.16"
+                    ]
+                ],
+                "chunk_folder": [
+                    [
+                        {
+                            "id": "predicted_set1",
+                            "structure_type": "predicted"
+                        },
+                        [
+                            "predicted_set1_ids_mapping.0.txt:md5,5930db3137182faeca751bd4b568b8ca",
+                            "predicted_set1_ids_mapping.1.txt:md5,14ab986ef866ea0c24d5506bcd52906d"
+                        ]
+                    ]
+                ],
+                "tsv": [
+                    [
+                        {
+                            "id": "predicted_set1",
+                            "structure_type": "predicted"
+                        },
+                        "predicted_set1.tsv:md5,4ef2a9d19d639fc2e3c93681bec4c84c"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "CHUNKBYZIP",
+                        "python",
+                        "3.13.16"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-20T15:24:55.088313",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "predicted_set1 - three structures - chunk size 2": {
         "content": [
             {
@@ -8,7 +75,7 @@
                             "id": "predicted_set1",
                             "structure_type": "predicted"
                         },
-                        "predicted_set1.tsv:md5,e3a84aa28b11ed689d47fa8c12301242"
+                        "predicted_set1.tsv:md5,b3fe9f9bebd46843aed52f7420a1a786"
                     ]
                 ],
                 "1": [
@@ -48,7 +115,7 @@
                             "id": "predicted_set1",
                             "structure_type": "predicted"
                         },
-                        "predicted_set1.tsv:md5,e3a84aa28b11ed689d47fa8c12301242"
+                        "predicted_set1.tsv:md5,b3fe9f9bebd46843aed52f7420a1a786"
                     ]
                 ],
                 "versions_python": [
@@ -60,7 +127,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T21:32:30.126802",
+        "timestamp": "2026-10-20T15:24:38.012038",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -125,7 +192,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-18T21:32:46.829656",
+        "timestamp": "2026-10-20T15:25:11.585875",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
