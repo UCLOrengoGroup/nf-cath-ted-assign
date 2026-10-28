@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "ted_segmentation"
+description: |
+  
+keywords:
+  - protein structure
+components:
+  - ted/merizounidoc
+  - ted/chainsaw
+  - ted/consensus
+input:
+  - name:
+      type: file
+      description: |
+        
+      pattern: "*.zip"
+output:
+  - name:
+      type: file
+      description: |
+      pattern: "*.{txt,zip}"
+authors:
+  - "@FernandoDuarteF"
+  - "@chriswyatt1"
+maintainers:
+  - "@FernandoDuarteF"
+  - "@chriswyatt1"

@@ -1,0 +1,152 @@
+{
+    "predicted and experimental zips - chunk sizes 2": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "experimental_set1",
+                        "structure_type": "experimental",
+                        "chunk_id": 0,
+                        "max_residues": 76
+                    },
+                    [
+                        "1UBQ"
+                    ],
+                    "experimental_set1_0.normalised.zip"
+                ],
+                [
+                    {
+                        "id": "predicted_set1",
+                        "structure_type": "predicted",
+                        "chunk_id": 0,
+                        "max_residues": 50
+                    },
+                    [
+                        "A0A009DYA3",
+                        "A0A009DWJ5"
+                    ],
+                    "predicted_set1.zip"
+                ],
+                [
+                    {
+                        "id": "predicted_set1",
+                        "structure_type": "predicted",
+                        "chunk_id": 1,
+                        "max_residues": 340
+                    },
+                    [
+                        "A0A003"
+                    ],
+                    "predicted_set1.zip"
+                ],
+                [
+                    {
+                        "id": "predicted_set2",
+                        "structure_type": "predicted",
+                        "chunk_id": 0,
+                        "max_residues": 394
+                    },
+                    [
+                        "A0A000",
+                        "A0A009DY47"
+                    ],
+                    "predicted_set2.zip"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "experimental_set1",
+                        "structure_type": "experimental",
+                        "chunk_id": 0
+                    },
+                    "experimental_set1_0.filter_metadata.tsv:md5,5bdbf53d812a21efe890e739f8145bab"
+                ],
+                [
+                    {
+                        "id": "predicted_set1",
+                        "structure_type": "predicted",
+                        "chunk_id": 0
+                    },
+                    "predicted_set1_0.filter_metadata.tsv:md5,db3dbe5bac78e005f72bd9e99cc20e59"
+                ],
+                [
+                    {
+                        "id": "predicted_set1",
+                        "structure_type": "predicted",
+                        "chunk_id": 1
+                    },
+                    "predicted_set1_1.filter_metadata.tsv:md5,e04a5210f3c1ad38e2a234fe06f816fb"
+                ],
+                [
+                    {
+                        "id": "predicted_set2",
+                        "structure_type": "predicted",
+                        "chunk_id": 0
+                    },
+                    "predicted_set2_0.filter_metadata.tsv:md5,bd7953d0a4a5661ab7846ba2d10992fb"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "experimental_set1",
+                        "structure_type": "experimental",
+                        "chunk_id": 0
+                    },
+                    "experimental_set1_0.renumber_errors.tsv:md5,33b80ecec90caab9c91cdd73bd6fa44a"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "experimental_set1",
+                        "structure_type": "experimental",
+                        "chunk_id": 0
+                    },
+                    "experimental_set1_0.resmaps.zip"
+                ]
+            ]
+        ],
+        "timestamp": "2026-10-20T15:25:46.942154",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "predicted and experimental zips - max_entries 3": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "experimental_set1",
+                        "structure_type": "experimental",
+                        "chunk_id": 0,
+                        "max_residues": 76
+                    },
+                    [
+                        "1UBQ"
+                    ],
+                    "experimental_set1_0.normalised.zip"
+                ],
+                [
+                    {
+                        "id": "predicted_set2",
+                        "structure_type": "predicted",
+                        "chunk_id": 0,
+                        "max_residues": 394
+                    },
+                    [
+                        "A0A000"
+                    ],
+                    "predicted_set2.zip"
+                ]
+            ]
+        ],
+        "timestamp": "2026-10-20T15:26:15.440127",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

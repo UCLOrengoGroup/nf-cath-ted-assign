@@ -5,6 +5,7 @@
 */
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { PREPARE_INPUT          } from '../subworkflows/local/prepare_input/main.nf'
+include { TED_SEGMENTATION       } from '../subworkflows/local/ted_segmentation/main.nf'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -45,6 +46,10 @@ workflow CATHTEDASSIGN {
         max_entries,
         min_chain_residues,
         max_chain_residues,
+    )
+
+    TED_SEGMENTATION (
+        PREPARE_INPUT.out.structures
     )
 
     //
