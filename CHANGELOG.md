@@ -18,4 +18,6 @@ Initial release of nf-core/cathtedassign, created with the [nf-core](https://nf-
 
 ### `Dependencies`
 
+- [#17](https://github.com/UCLOrengoGroup/nf-cath-ted-assign/pull/17) - Update to the nf-core/tools 4.2.1 template (nf-schema 2.7.3, nft-utils 1.2.1)
+
 ### `Deprecated`
