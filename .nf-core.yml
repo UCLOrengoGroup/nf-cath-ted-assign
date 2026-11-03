@@ -1,22 +1,23 @@
-repository_type: pipeline
-
-nf_core_version: 4.1.0
-
 lint:
   files_exist:
     - conf/igenomes.config
     - conf/igenomes_ignored.config
-
+  files_unchanged:
+    - assets/nf-core-cathtedassign_logo_light.png
+    - docs/images/nf-core-cathtedassign_logo_light.png
+    - docs/images/nf-core-cathtedassign_logo_dark.png
+nf_core_version: 4.2.1
+repository_type: pipeline
 template:
-  org: nf-core
-  name: cathtedassign
-  description: Consensus domain annotation pipeline for protein structures
   author: Chris Wyatt, Fernando Duarte, Ian Sillitoe, Nick Edmunds
-  version: 1.0.0dev
-  force: true
+  description: Consensus domain annotation pipeline for protein structures
+  force: false
+  is_nfcore: true
+  name: cathtedassign
+  org: nf-core
   outdir: .
   skip_features:
     - igenomes
     - fastqc
     - gpu
-  is_nfcore: true
+  version: 1.0.0dev
