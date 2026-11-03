@@ -197,3 +197,4 @@ Intentional differences from the nf-core template. Keep our side when resolving 
 - CI (`python-tests.yml`) lints them with `ruff`, checking real errors only (see `ruff.toml`), and tests them with `pytest` (`tests/bin/`).
 - Before a PR, run `ruff check bin/ tests/bin/` and `pytest tests/bin`. This needs `gemmi`, `pandas` and `requests` at the versions in the modules' `environment.yml`.
 - Keep the scripts close to the upstream domain-annotation-pipeline versions, so fixes can be compared and shared.
+- When bringing an upstream script across unchanged, import it with its history (`git filter-repo --path <path> --path-rename <path>:bin/<script>`, then merge with `--allow-unrelated-histories`), as for `bin/format_fs_output.py`. Make any change, such as adding a shebang, in a separate commit.

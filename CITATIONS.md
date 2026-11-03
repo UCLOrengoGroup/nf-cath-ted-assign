@@ -10,6 +10,10 @@
 
 ## Pipeline tools
 
+- [Foldseek](https://doi.org/10.1038/s41587-023-01773-0)
+
+> van Kempen M, Kim SS, Tumescheit C, Mirdita M, Lee J, Gilchrist CLM, Söding J, Steinegger M. Fast and accurate protein structure search with Foldseek. Nat Biotechnol. 2024;42(2):243-246. doi: 10.1038/s41587-023-01773-0.
+
 - [Gemmi](https://doi.org/10.21105/joss.04200)
 
 > Wojdyr M. GEMMI: A library for structural biology. Journal of Open Source Software. 2022;7(73):4200. doi: 10.21105/joss.04200.
@@ -19,6 +23,10 @@
 > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
 
 ## Data resources
+
+- [CATH](https://doi.org/10.1093/nar/gkaa1079)
+
+> Sillitoe I, Bordin N, Dawson N, et al. CATH: increased structural coverage of functional space. Nucleic Acids Res. 2021;49(D1):D266-D273. doi: 10.1093/nar/gkaa1079.
 
 - [UniProt](https://doi.org/10.1093/nar/gkae1010)
 
