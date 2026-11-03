@@ -1,0 +1,83 @@
+nextflow_workflow {
+
+    name "Test Subworkflow HOMCHECK"
+    script "../main.nf"
+    workflow "HOMCHECK"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "homcheck"
+    tag "untar"
+    tag "foldseek/easysearch"
+    tag "foldseek/processresults"
+
+    test("chopped_domains - mini CATH foldseek db (tar.gz)") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id:'test', chunk_id:0 ],
+                    file(params.pipelines_testdata_base_path + 'homcheck/chopped_domains.tar.gz', checkIfExists: true)
+                ])
+                input[1] = channel.value([
+                    [ id:'cath_test_db' ],
+                    file(params.pipelines_testdata_base_path + 'homcheck/cath_test_foldseekdb.tar.gz', checkIfExists: true)
+                ])
+                input[2] = file(params.pipelines_testdata_base_path + 'homcheck/CathDomainList.S95.v4.4.0.test', checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            // Scores can differ in the last digits between Foldseek builds (e.g. macOS and Linux),
+            // so the snapshot keeps hit IDs and CATH assignments rather than file checksums
+            def hits = path(workflow.out.foldseek_hits[0][1]).readLines().collect { line -> line.split('\t') }
+            def assignments = hits.drop(1).collect { cols -> [ cols[0], cols[4], cols[5] ] }
+            def aln_pairs = path(workflow.out.foldseek_aln[0][1]).readLines().collect { line -> line.split('\t')[0..1].join(' ') }.sort()
+            assertAll(
+                { assert workflow.success },
+                { assert assignments == [ ['1nl0L01', '2.60.40.10', 'H'], ['2wteA02', '1.10.10.10', 'H'], ['6egeD01', '3.30.200.20', 'H'] ] },
+                { assert snapshot(
+                    workflow.out.foldseek_hits[0][0],
+                    hits.collect { cols -> [ cols[0], cols[1], cols[4], cols[5] ] },
+                    aln_pairs
+                ).match() }
+            )
+        }
+    }
+
+    test("chopped_domains - mini CATH foldseek db (tar.gz) - stub") {
+
+        options "-stub"
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id:'test', chunk_id:0 ],
+                    file(params.pipelines_testdata_base_path + 'homcheck/chopped_domains.tar.gz', checkIfExists: true)
+                ])
+                input[1] = channel.value([
+                    [ id:'cath_test_db' ],
+                    file(params.pipelines_testdata_base_path + 'homcheck/cath_test_foldseekdb.tar.gz', checkIfExists: true)
+                ])
+                input[2] = file(params.pipelines_testdata_base_path + 'homcheck/CathDomainList.S95.v4.4.0.test', checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+}

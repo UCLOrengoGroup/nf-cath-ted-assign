@@ -11,6 +11,7 @@ Initial release of nf-core/cathtedassign, created with the [nf-core](https://nf-
 
 - [#8](https://github.com/UCLOrengoGroup/nf-cath-ted-assign/pull/8), [#10](https://github.com/UCLOrengoGroup/nf-cath-ted-assign/pull/10), [#11](https://github.com/UCLOrengoGroup/nf-cath-ted-assign/pull/11) - Input preparation: list the structures in each input ZIP archive, split them into chunks, renumber experimental structures (`structure_type` samplesheet column), keep single-model, single-chain proteins within `--min_chain_residues`/`--max_chain_residues`, and fetch UniProt taxonomy for predicted structures
 - [#13](https://github.com/UCLOrengoGroup/nf-cath-ted-assign/pull/13) - Length-aware second chunking for segmentation (`--heavy_chunk_size`), with the residue count of each chunk's longest structure (`max_residues`) in `meta`; ruff and pytest checks for the `bin/` scripts
+- [#18](https://github.com/UCLOrengoGroup/nf-cath-ted-assign/pull/18) - `HOMCHECK` subworkflow: Foldseek search of chopped domains against a CATH database, with the best hit per domain classified as homologous superfamily, topology or structural match (not yet wired into the pipeline)
 
 ### `Fixed`
 
