@@ -144,4 +144,4 @@ def write_best_hit(outfile, query_id, best_hit):
     )
 
 if __name__ == '__main__':
-    process_foldseek() 
+    process_foldseek()
