@@ -53,4 +53,7 @@ workflow TED_SEGMENTATION {
         ch_consensus.unidoc
     )
 
+emit:
+consensus = TED_CONSENSUS.out.consensus  // channel: [ val(meta), path(txt) ]
+
 }
