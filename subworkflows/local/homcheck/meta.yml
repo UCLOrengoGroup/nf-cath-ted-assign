@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "homcheck"
+description: |
+  Assign chopped domains to CATH superfamilies by structure search: search each chunk
+  of domains against a CATH Foldseek database and keep the best hit per domain,
+  classified as homologous superfamily (H), topology (T) or structural (N) match
+keywords:
+  - cath
+  - foldseek
+  - homology
+  - protein domains
+components:
+  - untar
+  - foldseek/easysearch
+  - foldseek/processresults
+input:
+  - ch_domains:
+      type: file
+      description: |
+        Chopped domain structures per chunk, as a .tar.gz, a directory or PDB files
+        Structure: [ val(meta), path(domains) ]
+      pattern: "*.{tar.gz,pdb}"
+  - ch_foldseek_db:
+      type: directory
+      description: |
+        CATH Foldseek database, as a directory or a .tar.gz of one. meta2.id is the
+        database name inside it (e.g. cath_v4_4_0_s95_db)
+        Structure: [ val(meta2), path(db) ]
+  - cath_domain_list:
+      type: file
+      description: |
+        CATH domain list (e.g. CathDomainList.S95.v4.4.0) covering every database entry, as a value channel
+        Structure: path(cath_domain_list)
+output:
+  - foldseek_hits:
+      type: file
+      description: |
+        Best CATH hit per domain (query_id, target_id, evalue, tmscore, code, type, qcov, tcov)
+        Structure: [ val(meta), path(tsv) ]
+      pattern: "*.foldseek_parsed_results.tsv"
+  - foldseek_aln:
+      type: file
+      description: |
+        All Foldseek hits per chunk
+        Structure: [ val(meta), path(m8) ]
+      pattern: "*.m8"
+authors:
+  - "@NSEdmunds"
+  - "@chriswyatt1"
+maintainers:
+  - "@chriswyatt1"

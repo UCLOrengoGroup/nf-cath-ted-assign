@@ -1,0 +1,116 @@
+{
+    "chopped_domains - foldseek hits against mini CATH db": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "chunk_id": 0
+                        },
+                        "test.foldseek_parsed_results.tsv:md5,0947702919d80479cd07b063fa9ae0e0"
+                    ]
+                ],
+                "1": [
+                    [
+                        "FOLDSEEK_PROCESSRESULTS",
+                        "python",
+                        "3.13.16"
+                    ]
+                ],
+                "2": [
+                    [
+                        "FOLDSEEK_PROCESSRESULTS",
+                        "click",
+                        "8.5.0"
+                    ]
+                ],
+                "tsv": [
+                    [
+                        {
+                            "id": "test",
+                            "chunk_id": 0
+                        },
+                        "test.foldseek_parsed_results.tsv:md5,0947702919d80479cd07b063fa9ae0e0"
+                    ]
+                ],
+                "versions_click": [
+                    [
+                        "FOLDSEEK_PROCESSRESULTS",
+                        "click",
+                        "8.5.0"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "FOLDSEEK_PROCESSRESULTS",
+                        "python",
+                        "3.13.16"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-11-03T11:42:09.40414",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "chopped_domains - foldseek hits against mini CATH db - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "chunk_id": 0
+                        },
+                        "test.foldseek_parsed_results.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        "FOLDSEEK_PROCESSRESULTS",
+                        "python",
+                        "3.13.16"
+                    ]
+                ],
+                "2": [
+                    [
+                        "FOLDSEEK_PROCESSRESULTS",
+                        "click",
+                        "8.5.0"
+                    ]
+                ],
+                "tsv": [
+                    [
+                        {
+                            "id": "test",
+                            "chunk_id": 0
+                        },
+                        "test.foldseek_parsed_results.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_click": [
+                    [
+                        "FOLDSEEK_PROCESSRESULTS",
+                        "click",
+                        "8.5.0"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "FOLDSEEK_PROCESSRESULTS",
+                        "python",
+                        "3.13.16"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-11-03T11:42:57.138894",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}
