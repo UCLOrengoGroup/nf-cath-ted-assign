@@ -9,8 +9,8 @@ process TED_MERIZO {
     tuple val(meta), path(ids), path(zip)
 
     output:
-    tuple val(meta), path("*/chopping_merizo_sorted.txt"), emit: merizo
-    tuple val(meta), path("*/chopping_merizo.log"), emit: log
+    tuple val(meta), path("*_chopping_merizo_sorted.txt"), emit: merizo
+    tuple val(meta), path("*_chopping_merizo.log"), emit: log
 
     when:
     task.ext.when == null || task.ext.when
@@ -46,13 +46,13 @@ process TED_MERIZO {
     mkdir -p output
 
     # ---------- Merizo (UniDoc inherits Merizo's chopping) ----------
-    bash scripts/segment.sh -i ./filtered_pdbs -m merizo -o ./output > output/chopping_merizo.log 2>&1
+    bash scripts/segment.sh -i ./filtered_pdbs -m merizo -o ./output > ${prefix}_chopping_merizo.log 2>&1
     if test ! -s output/chopping_merizo.txt; then
-        echo "Merizo segmentation failed. Check log at output/chopping_merizo.log"
+        echo "Merizo segmentation failed. Check log at ${prefix}_chopping_merizo.log"
         exit 1
     fi
 
-    sort output/chopping_merizo.txt > output/chopping_merizo_sorted.txt
+    sort output/chopping_merizo.txt > ${prefix}_chopping_merizo_sorted.txt
 
     # ---------- Clean up filtered set ----------
     rm -rf filtered_pdbs
@@ -63,9 +63,8 @@ process TED_MERIZO {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     echo $args
-    
-    mkdir output
-    touch output/chopping_merizo_sorted.txt
-    touch output/chopping_merizo.log
+
+    touch ${prefix}_chopping_merizo_sorted.txt
+    touch ${prefix}_chopping_merizo.log
     """
 }

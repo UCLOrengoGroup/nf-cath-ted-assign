@@ -6,6 +6,8 @@
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { PREPARE_INPUT          } from '../subworkflows/local/prepare_input/main.nf'
 include { TED_SEGMENTATION       } from '../subworkflows/local/ted_segmentation/main.nf'
+include { POST_TED_PROCESSING    } from '../subworkflows/local/post_ted_processing/main.nf'
+include { STRUCTURE_ANALYSIS     } from '../subworkflows/local/structure_analysis/main.nf'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -50,6 +52,17 @@ workflow CATHTEDASSIGN {
 
     TED_SEGMENTATION (
         PREPARE_INPUT.out.structures
+    )
+
+    POST_TED_PROCESSING (
+        TED_SEGMENTATION.out.consensus,
+        PREPARE_INPUT.out.structures
+    )
+
+
+    STRUCTURE_ANALYSIS (
+        POST_TED_PROCESSING.out.chopped_pdb,
+        POST_TED_PROCESSING.out.chunk_md5
     )
 
     //

@@ -10,8 +10,8 @@ process TED_UNIDOC {
     tuple val(meta2), path(txt)
 
     output:
-    tuple val(meta), path("*/chopping_unidoc_sorted.txt"), emit: unidoc
-    tuple val(meta), path("*/chopping_unidoc.log"), emit: log
+    tuple val(meta), path("*_chopping_unidoc_sorted.txt"), emit: unidoc
+    tuple val(meta), path("*_chopping_unidoc.log"), emit: log
 
     when:
     task.ext.when == null || task.ext.when
@@ -46,13 +46,13 @@ process TED_UNIDOC {
     . ted_consensus/bin/activate
     mkdir -p output
 
-    bash scripts/segment.sh -i ./filtered_pdbs -m unidoc -o ./output -c ${txt} > output/chopping_unidoc.log 2>&1
+    bash scripts/segment.sh -i ./filtered_pdbs -m unidoc -o ./output -c ${txt} > ${prefix}_chopping_unidoc.log 2>&1
     if test ! -s output/chopping_unidoc.txt; then
-        echo "UniDoc segmentation failed. Check log at output/chopping_unidoc.log"
+        echo "UniDoc segmentation failed. Check log at ${prefix}_chopping_unidoc.log"
         exit 1
     fi
 
-    sort output/chopping_unidoc.txt > output/chopping_unidoc_sorted.txt
+    sort output/chopping_unidoc.txt > ${prefix}_chopping_unidoc_sorted.txt
 
     # ---------- Clean up filtered set ----------
     rm -rf filtered_pdbs
@@ -63,9 +63,8 @@ process TED_UNIDOC {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     echo $args
-    
-    mkdir output
-    touch output/chopping_unidoc_sorted.txt
-    touch output/chopping_unidoc.log
+
+    touch ${prefix}_chopping_unidoc_sorted.txt
+    touch ${prefix}_chopping_unidoc.log
     """
 }
