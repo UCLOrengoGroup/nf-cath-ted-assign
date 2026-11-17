@@ -1,0 +1,124 @@
+name: "foldseek_processresults"
+description: |
+  Pick the best CATH hit for each query domain from Foldseek search results and
+  classify it as a homologous superfamily (H), topology (T) or structural (N) match
+keywords:
+  - foldseek
+  - cath
+  - homology
+  - protein structure
+tools:
+  - format_fs_output.py:
+      description: |
+        Script from the domain-annotation-pipeline that maps Foldseek hits to CATH
+        superfamilies with fixed E-value, coverage and TM-score thresholds
+      homepage: https://github.com/UCLOrengoGroup/domain-annotation-pipeline
+      documentation: https://github.com/UCLOrengoGroup/domain-annotation-pipeline
+      tool_dev_url: https://github.com/UCLOrengoGroup/domain-annotation-pipeline/blob/dev/foldseek/bin/format_fs_output.py
+      licence:
+        - "GPL-3.0"
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'predicted_set1', chunk_id:0 ]`
+    - m8:
+        type: file
+        description: |
+          Foldseek results with the columns query, target, fident, evalue, qlen,
+          tlen, qtmscore, ttmscore, qcov, tcov, grouped by query
+        pattern: "*.m8"
+        ontologies:
+          - edam: http://edamontology.org/format_3475
+  - cath_domain_list:
+      type: file
+      description: CATH domain list (e.g. CathDomainList.S95.v4.4.0) covering every target in the Foldseek database
+      pattern: "CathDomainList*"
+      ontologies: []
+output:
+  tsv:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'predicted_set1', chunk_id:0 ]`
+      - ${prefix}.foldseek_parsed_results.tsv:
+          type: file
+          description: |
+            Best hit per query domain (query_id, target_id, evalue, tmscore, code,
+            type, qcov, tcov), sorted after the header row. Domains with no hit
+            above the thresholds are omitted.
+          pattern: "*.foldseek_parsed_results.tsv"
+          ontologies:
+            - edam: http://edamontology.org/format_3475
+  versions_python:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - 'python3 --version | sed "s/Python //"':
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_click:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - click:
+          type: string
+          description: The name of the tool
+      - 'python3 -c ''import importlib.metadata as m; print(m.version("click"))''':
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - 'python3 --version | sed "s/Python //"':
+          type: eval
+          description: The expression to obtain the version of the tool
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - click:
+          type: string
+          description: The name of the tool
+      - 'python3 -c ''import importlib.metadata as m; print(m.version("click"))''':
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@NSEdmunds"
+  - "@chriswyatt1"
+maintainers:
+  - "@chriswyatt1"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/click_python:f480d4629ea44859
+      build_id: bd-f480d4629ea44859_1
+      scan_id: sc-13b6881331281f95_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/click_python:8121c0af55ceb7e9
+      build_id: bd-8121c0af55ceb7e9_1
+      scan_id: sc-9f82d0b780fc3965_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/click_python:b586748a68a00490
+      build_id: bd-b586748a68a00490_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d9/d92165910ed32afaade41d724a643c106986e79d62122291d98375ec73e105d7/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/click_python:23b4aa512c2780d7
+      build_id: bd-23b4aa512c2780d7_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/6f/6fc98e240c0935c680d0bfbb8599c4f0a75c9b3ab061630b2cb1f0be8001b263/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/foldseek/processresults/.conda-lock/linux_amd64-bd-f480d4629ea44859_1.txt
+    linux/arm64:
+      lock_file: modules/local/foldseek/processresults/.conda-lock/linux_arm64-bd-8121c0af55ceb7e9_1.txt

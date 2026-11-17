@@ -25,7 +25,7 @@ jobs:
 
       # Library versions match the modules' environment.yml files
       - name: Install dependencies
-        run: pip install ruff==0.17.1 pytest==9.1.1 gemmi==0.7.5 pandas==2.3.3 requests==2.34.2
+        run: pip install ruff==0.17.1 pytest==9.1.1 click==8.5.0 gemmi==0.7.5 pandas==2.3.3 requests==2.34.2
 
       - name: Lint (ruff)
         run: ruff check bin/ tests/bin/

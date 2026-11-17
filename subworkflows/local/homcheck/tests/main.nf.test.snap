@@ -1,0 +1,116 @@
+{
+    "chopped_domains - mini CATH foldseek db (tar.gz) - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "chunk_id": 0
+                        },
+                        "test_0.foldseek_parsed_results.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "chunk_id": 0
+                        },
+                        "test_0.m8:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "foldseek_aln": [
+                    [
+                        {
+                            "id": "test",
+                            "chunk_id": 0
+                        },
+                        "test_0.m8:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "foldseek_hits": [
+                    [
+                        {
+                            "id": "test",
+                            "chunk_id": 0
+                        },
+                        "test_0.foldseek_parsed_results.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-11-03T11:53:20.638109",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "chopped_domains - mini CATH foldseek db (tar.gz)": {
+        "content": [
+            {
+                "id": "test",
+                "chunk_id": 0
+            },
+            [
+                [
+                    "query_id",
+                    "target_id",
+                    "code",
+                    "type"
+                ],
+                [
+                    "1nl0L01",
+                    "5eb9A00",
+                    "2.60.40.10",
+                    "H"
+                ],
+                [
+                    "2wteA02",
+                    "4hw0C00",
+                    "1.10.10.10",
+                    "H"
+                ],
+                [
+                    "6egeD01",
+                    "3cokA01",
+                    "3.30.200.20",
+                    "H"
+                ]
+            ],
+            [
+                "1nl0L01 1h8nA02",
+                "1nl0L01 3og4B01",
+                "1nl0L01 3tesA00",
+                "1nl0L01 4hssB01",
+                "1nl0L01 4nofB00",
+                "1nl0L01 4p3wC01",
+                "1nl0L01 5eb9A00",
+                "2wteA02 1yyvB00",
+                "2wteA02 1z7uB00",
+                "2wteA02 4d0pA02",
+                "2wteA02 4esbA00",
+                "2wteA02 4hw0C00",
+                "2wteA02 6az6A01",
+                "4ar9A03 1blxA01",
+                "4ar9A03 3cokA01",
+                "4ar9A03 3hztA01",
+                "4ar9A03 4fnxA01",
+                "4ar9A03 6yz4A01",
+                "4ar9A03 7aqbA01",
+                "6egeD01 1blxA01",
+                "6egeD01 3cokA01",
+                "6egeD01 3hztA01",
+                "6egeD01 3mfrA01",
+                "6egeD01 4fnxA01",
+                "6egeD01 6yz4A01",
+                "6egeD01 7aqbA01"
+            ]
+        ],
+        "timestamp": "2026-11-03T11:51:40.763928",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

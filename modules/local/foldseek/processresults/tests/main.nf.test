@@ -1,0 +1,66 @@
+nextflow_process {
+
+    name "Test Process FOLDSEEK_PROCESSRESULTS"
+    script "../main.nf"
+    process "FOLDSEEK_PROCESSRESULTS"
+
+    tag "modules"
+    tag "modules_local"
+    tag "foldseek"
+    tag "foldseek/processresults"
+
+    // Three domains get their own superfamily (type H); 4ar9A03, whose superfamily is not in the database, gets no row
+    test("chopped_domains - foldseek hits against mini CATH db") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', chunk_id:0 ],
+                    file(params.pipelines_testdata_base_path + 'homcheck/chopped_domains.m8', checkIfExists: true)
+                ]
+                input[1] = file(params.pipelines_testdata_base_path + 'homcheck/CathDomainList.S95.v4.4.0.test', checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            def assignments = path(process.out.tsv[0][1]).readLines().drop(1).collect { line -> line.split('\t') }.collect { cols -> [ cols[0], cols[4], cols[5] ] }
+            assertAll(
+                { assert process.success },
+                { assert assignments == [ ['1nl0L01', '2.60.40.10', 'H'], ['2wteA02', '1.10.10.10', 'H'], ['6egeD01', '3.30.200.20', 'H'] ] },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("chopped_domains - foldseek hits against mini CATH db - stub") {
+
+        options "-stub"
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', chunk_id:0 ],
+                    file(params.pipelines_testdata_base_path + 'homcheck/chopped_domains.m8', checkIfExists: true)
+                ]
+                input[1] = file(params.pipelines_testdata_base_path + 'homcheck/CathDomainList.S95.v4.4.0.test', checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

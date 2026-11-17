@@ -1,0 +1,80 @@
+{
+    "proteomics - pdb": {
+        "content": [
+            {
+                "aln": [
+                    [
+                        {
+                            "id": "test_search"
+                        },
+                        "test_search.m8"
+                    ]
+                ],
+                "versions_foldseek": [
+                    [
+                        "FOLDSEEK_EASYSEARCH",
+                        "foldseek",
+                        "10.941cd33"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-09-24T14:03:17.437571536",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "proteomics - pdb - stub": {
+        "content": [
+            {
+                "aln": [
+                    [
+                        {
+                            "id": "test_search"
+                        },
+                        "test_search.m8:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_foldseek": [
+                    [
+                        "FOLDSEEK_EASYSEARCH",
+                        "foldseek",
+                        "10.941cd33"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-09-24T14:03:29.697894699",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "proteomics - pdb - lookup fallback": {
+        "content": [
+            {
+                "aln": [
+                    [
+                        {
+                            "id": "test_search"
+                        },
+                        "test_search.m8"
+                    ]
+                ],
+                "versions_foldseek": [
+                    [
+                        "FOLDSEEK_EASYSEARCH",
+                        "foldseek",
+                        "10.941cd33"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-09-24T14:44:32.545987967",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}
