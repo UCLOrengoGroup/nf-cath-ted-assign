@@ -1,0 +1,90 @@
+nextflow_workflow {
+
+    name "Test Subworkflow PREPARE_INPUT"
+    script "../main.nf"
+    workflow "PREPARE_INPUT"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "prepare_input"
+    tag "createinputzip"
+    tag "chunkbyzip"
+    tag "renumberpdb"
+    tag "filterpdb"
+    tag "getuniprot"
+
+    test("predicted and experimental zips - chunk sizes 2") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of(
+                    [ [ id:'predicted_set1', structure_type:'predicted' ], file(params.pipelines_testdata_base_path + 'prepare_input/predicted_set1.zip', checkIfExists: true) ],
+                    [ [ id:'predicted_set2', structure_type:'predicted' ], file(params.pipelines_testdata_base_path + 'prepare_input/predicted_set2.zip', checkIfExists: true) ],
+                    [ [ id:'experimental_set1', structure_type:'experimental' ], file(params.pipelines_testdata_base_path + 'prepare_input/experimental_set1.zip', checkIfExists: true) ]
+                )
+                input[1] = 2
+                input[2] = 2
+                input[3] = null
+                input[4] = 25
+                input[5] = 1500
+                """
+            }
+        }
+
+        then {
+            // Normalised and residue-map zips embed timestamps, and UniProt data changes over time,
+            // so those are reduced to stable summaries
+            def structures = workflow.out.structures
+                .collect { meta, ids, zip -> [ meta, path(ids).readLines(), zip.tokenize('/')[-1] ] }
+                .sort { a, b -> a[0].id <=> b[0].id ?: a[0].chunk_id <=> b[0].chunk_id }
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.uniprot.size() == 3 },
+                { assert snapshot(
+                    structures,
+                    workflow.out.filter_metadata,
+                    workflow.out.renumber_errors,
+                    workflow.out.resmaps.collect { meta, zip -> [ meta, zip.tokenize('/')[-1] ] }
+                ).match() }
+            )
+        }
+    }
+
+    // IDs sort as 1UBQ, 4HHB, A0A000, ... so the first three come from both an experimental and a predicted zip
+    test("predicted and experimental zips - max_entries 3") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            workflow {
+                """
+                input[0] = channel.of(
+                    [ [ id:'predicted_set1', structure_type:'predicted' ], file(params.pipelines_testdata_base_path + 'prepare_input/predicted_set1.zip', checkIfExists: true) ],
+                    [ [ id:'predicted_set2', structure_type:'predicted' ], file(params.pipelines_testdata_base_path + 'prepare_input/predicted_set2.zip', checkIfExists: true) ],
+                    [ [ id:'experimental_set1', structure_type:'experimental' ], file(params.pipelines_testdata_base_path + 'prepare_input/experimental_set1.zip', checkIfExists: true) ]
+                )
+                input[1] = 2
+                input[2] = 2
+                input[3] = 3
+                input[4] = 25
+                input[5] = 1500
+                """
+            }
+        }
+
+        then {
+            def structures = workflow.out.structures
+                .collect { meta, ids, zip -> [ meta, path(ids).readLines(), zip.tokenize('/')[-1] ] }
+                .sort { a, b -> a[0].id <=> b[0].id ?: a[0].chunk_id <=> b[0].chunk_id }
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(structures).match() }
+            )
+        }
+    }
+}

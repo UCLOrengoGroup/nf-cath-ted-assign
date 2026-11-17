@@ -15,6 +15,8 @@ Initial release of nf-core/cathtedassign, created with the [nf-core](https://nf-
 
 ### `Fixed`
 
+- [#20](https://github.com/UCLOrengoGroup/nf-cath-ted-assign/pull/20) - README states that the pipeline is in development and not an nf-core pipeline, and drops the nf-core branding
+
 - [#12](https://github.com/UCLOrengoGroup/nf-cath-ted-assign/pull/12) - Run nf-test on GitHub-hosted runners; fix `nf-core pipelines lint` failures; remove `--debug` (use `--max_entries` on its own)
 
 ### `Dependencies`

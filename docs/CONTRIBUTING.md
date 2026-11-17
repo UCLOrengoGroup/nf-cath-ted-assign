@@ -190,6 +190,7 @@ Intentional differences from the nf-core template. Keep our side when resolving 
 - `nextflow.config`, `tests/nextflow.config`: `pipelines_testdata_base_path` points to [chriswyatt1/cathtedassign-test-datasets](https://github.com/chriswyatt1/cathtedassign-test-datasets).
 - `.nf-core.yml`: the logo PNGs are excluded from the `files_unchanged` lint check because their rendering differs between machines.
 - `nextflow.config`: no `test_full` profile yet; `conf/test_full.config` still has template placeholders.
+- `README.md`: rewritten without nf-core branding (not an nf-core pipeline) and with an in-development notice. Keep ours in template syncs, updating only the template version badge.
 - `subworkflows/local/utils_nfcore_cathtedassign_pipeline/main.nf`: `validateInputSamplesheet()` removed. Duplicate IDs are rejected by `uniqueEntries` in `assets/schema_input.json`.
 
 ### Python scripts in `bin/`
