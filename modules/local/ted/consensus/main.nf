@@ -11,8 +11,8 @@ process TED_CONSENSUS {
     tuple val(meta3), path(unidoc)
 
     output:
-    tuple val(meta), path('output/consensus_sorted.tsv'), emit: consensus
-    tuple val(meta), path('output/consensus.tsv.changed.txt'), emit: consensus_changed
+    tuple val(meta), path('*.consensus_sorted.tsv'), emit: consensus
+    tuple val(meta), path('*.consensus.tsv.changed.txt'), emit: consensus_changed
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,21 +21,27 @@ process TED_CONSENSUS {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    . /app/ted-tools/ted_consensus_1.0/ted_consensus/bin/activate
-    mkdir -p output
-
     # Calculate consensus from Merizo, Chainsaw and UniDoc choppings
-    python3 /app/ted-tools/ted_consensus_1.0/scripts/get_consensus.py -c ${merizo} ${chainsaw} ${unidoc} -o output/consensus.tsv > output/consensus.log 2>&1
-    if test ! -f output/consensus.tsv; then
-        echo "Consensus calculation failed. Check log at output/consensus.log"
+    ted-consensus \\
+    $args \\
+    -c ${merizo} ${chainsaw} ${unidoc} \\
+    -o ${prefix}.consensus.tsv \\
+    > ${prefix}.consensus.log 2>&1
+
+    if test ! -f ${prefix}.consensus.tsv; then
+        echo "Consensus calculation failed. Check log at ${prefix}.consensus.log"
         exit 1
     fi
 
     # Filter consensus domains (also writes output/consensus.tsv.changed.txt)
-    python3 /app/ted-tools/ted_consensus_1.0/scripts/filter_domains_consensus.py output/consensus.tsv -o output/consensus.tsv.tmp
-    mv output/consensus.tsv.tmp output/consensus.tsv
+    filter_domains_consensus.py \\
+    ${prefix}.consensus.tsv \\
+    -o ${prefix}.consensus.tsv.tmp
 
-    sort output/consensus.tsv > output/consensus_sorted.tsv
+    mv ${prefix}.consensus.tsv.tmp ${prefix}.consensus.tsv
+
+    sort ${prefix}.consensus.tsv > ${prefix}.consensus_sorted.tsv
+
     """
 
     stub:
@@ -44,8 +50,7 @@ process TED_CONSENSUS {
     """
     echo $args
     
-    mkdir output
-    touch output/consensus_sorted.tsv
-    touch output/consensus.tsv.changed.txt
+    touch ${prefix}.consensus_sorted.tsv
+    touch ${prefix}.consensus.tsv.changed.txt
     """
 }
