@@ -4,6 +4,7 @@ include { CHUNKBYZIP as CHUNKBYZIP_HEAVY } from '../../../modules/local/chunkbyz
 include { RENUMBERPDB                    } from '../../../modules/local/renumberpdb/main'
 include { FILTERPDB                      } from '../../../modules/local/filterpdb/main'
 include { GETUNIPROT                     } from '../../../modules/local/getuniprot/main'
+include { UNTAR                          } from '../../../modules/nf-core/untar/main'
 
 workflow PREPARE_INPUT {
 
@@ -14,6 +15,8 @@ workflow PREPARE_INPUT {
     max_entries      // integer: maximum number of structures to process, or null for all
     min_residues   // integer: structures with this many residues or fewer are rejected
     max_residues   // integer: structures with this many residues or more are rejected
+    foldseek_db //string: path to the target database for foldseek search
+    foldseek_lookup //string: path to the lookup table for foldseek search
 
     main:
 
@@ -134,10 +137,33 @@ workflow PREPARE_INPUT {
         .combine( ch_zips_by_name, by: [ 0, 1 ] )
         .map { _id, _zip_name, meta, ids, zip -> [ meta, ids, zip ] }
 
+    channel.value(file(foldseek_db))
+        .map { db ->
+            def db_name = db.name.replaceAll(/\.(tar\.gz|tgz)$/, '')
+            [ [id:db_name], db ] }
+        .set { ch_foldseek_db }
+
+    channel.value(file(foldseek_lookup))
+        .set { ch_foldseek_lookup }
+
+    UNTAR ( ch_foldseek_db )
+
+    UNTAR.out.untar
+        .map { meta, dir ->
+            def lookup = dir.listFiles().find { f -> f.name.endsWith('.lookup') && !f.name.startsWith('._') }
+            if ( !lookup ) error("No Foldseek database (*.lookup) found in ${dir}")
+            [ meta + [ id: lookup.name - ~/\.lookup$/ ], dir ]
+        }
+        .first()
+        .set { ch_target_db }
+
     emit:
     structures      = ch_heavy_chunks         // channel: [ val(meta), path(ids), path(zip) ], segmentation chunks of accepted structures
     filter_metadata = FILTERPDB.out.metadata  // channel: [ val(meta), path(tsv) ]
     resmaps         = RENUMBERPDB.out.resmaps // channel: [ val(meta), path(zip) ]
     renumber_errors = RENUMBERPDB.out.errors  // channel: [ val(meta), path(tsv) ]
     uniprot         = GETUNIPROT.out.tsv      // channel: [ val(meta), path(tsv) ]
+    target_db       = ch_target_db           // channel: [ val(meta), path(dir) ]
+    lookup_table    = ch_foldseek_lookup        // channel: val(url)
+
 }

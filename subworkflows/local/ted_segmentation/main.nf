@@ -25,7 +25,7 @@ workflow TED_SEGMENTATION {
     //
     TED_MERIZO.out.merizo
         .join(ch_structures)
-        .multiMap { meta, merizo, ids, zip -> 
+        .multiMap { meta, merizo, ids, zip ->
             structures: tuple( meta, ids, zip )
             merizo: tuple( meta, merizo )
         }
@@ -52,5 +52,8 @@ workflow TED_SEGMENTATION {
         ch_consensus.merizo,
         ch_consensus.unidoc
     )
+
+emit:
+consensus = TED_CONSENSUS.out.consensus  // channel: [ val(meta), path(txt) ]
 
 }

@@ -11,8 +11,8 @@ process TED_CONSENSUS {
     tuple val(meta3), path(unidoc)
 
     output:
-    tuple val(meta), path('output/consensus_sorted.tsv'), emit: consensus
-    tuple val(meta), path('output/consensus.tsv.changed.txt'), emit: consensus_changed
+    tuple val(meta), path("*_consensus_sorted.tsv"), emit: consensus
+    tuple val(meta), path("*_consensus.tsv.changed.txt"), emit: consensus_changed
 
     when:
     task.ext.when == null || task.ext.when
@@ -35,7 +35,8 @@ process TED_CONSENSUS {
     python3 /app/ted-tools/ted_consensus_1.0/scripts/filter_domains_consensus.py output/consensus.tsv -o output/consensus.tsv.tmp
     mv output/consensus.tsv.tmp output/consensus.tsv
 
-    sort output/consensus.tsv > output/consensus_sorted.tsv
+    sort output/consensus.tsv > ${prefix}_consensus_sorted.tsv
+    mv output/consensus.tsv.changed.txt ${prefix}_consensus.tsv.changed.txt
     """
 
     stub:
@@ -43,9 +44,8 @@ process TED_CONSENSUS {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     echo $args
-    
-    mkdir output
-    touch output/consensus_sorted.tsv
-    touch output/consensus.tsv.changed.txt
+
+    touch ${prefix}_consensus_sorted.tsv
+    touch ${prefix}_consensus.tsv.changed.txt
     """
 }

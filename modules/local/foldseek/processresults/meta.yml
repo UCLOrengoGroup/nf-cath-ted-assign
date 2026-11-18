@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+# # TODO nf-core: Add a description of the module and list keywords
+name: "foldseek_processresults"
+description: write your description here
+keywords:
+  - sort
+  - example
+  - genomics
+tools:
+  ## TODO nf-core: Add a description and other details for the software below
+  - "foldseek":
+      description: "Foldseek: fast and accurate protein structure search"
+      homepage: "None"
+      documentation: "None"
+      tool_dev_url: "None"
+      doi: ""
+      licence: ["GPL v3"]
+      identifier: biotools:foldseek
+
+input:
+  # TODO nf-core: Update the information obtained from bio.tools and make sure that it is correct
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information. e.g. `[
+          id:'sample1' ]`
+    - protein_chain:
+        type: file
+        description: protein_chain file
+        pattern: "*.{pdb,mmcif}"
+        ontologies:
+          - edam: http://edamontology.org/data_1467 # Protein chain
+          - edam: http://edamontology.org/format_1476 # PDB
+          - edam: http://edamontology.org/format_1477 # mmCIF
+output:
+  # TODO nf-core: Update the information obtained from bio.tools and make sure that it is correct
+  protein_structure_alignment:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information. e.g. `[
+            id:'sample1' ]`
+      - "*.{}":
+          type: file
+          description: protein_structure_alignment file
+          pattern: "*.{}"
+          ontologies:
+            - edam: http://edamontology.org/data_1481 # Protein structure alignment
+  versions_foldseek:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - foldseek:
+          type: string
+          description: The name of the tool
+      - foldseek --version:
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - foldseek:
+          type: string
+          description: The name of the tool
+      - foldseek --version:
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@FernandoDuarteF"
+maintainers:
+  - "@FernandoDuarteF"
