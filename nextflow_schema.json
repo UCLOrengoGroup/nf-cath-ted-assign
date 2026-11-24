@@ -201,6 +201,30 @@
                 }
             }
         },
+        "new_group_1": {
+            "title": "New Group 1",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "foldseek_chunks_per_batch": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Number of PDB chunks per foldseek process. Reduces parallelisation."
+                },
+                "foldseek_db": {
+                    "type": "string",
+                    "default": "https://github.com/NSEdmunds/domain-annotation-pipeline-assets/releases/download/foldseek-assets-v4.4.0-s95/cath_v4_4_0_s95_foldseekdb.tar.gz",
+                    "description": "Paht to foldseek database."
+                },
+                "foldseek_lookup": {
+                    "type": "string",
+                    "default": "https://github.com/NSEdmunds/domain-annotation-pipeline-assets/releases/download/foldseek-assets-v4.4.0-s95/CathDomainList.S95.v4.4.0",
+                    "description": "Domain ID to CATH superfimality ID mapping table."
+                }
+            },
+            "required": ["foldseek_db", "foldseek_lookup"]
+        },
         "input_processing_options": {
             "title": "Input processing options",
             "type": "object",
@@ -250,13 +274,16 @@
             "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/$defs/input_processing_options"
-        },
-        {
             "$ref": "#/$defs/institutional_config_options"
         },
         {
             "$ref": "#/$defs/generic_options"
+        },
+        {
+            "$ref": "#/$defs/new_group_1"
+        },
+        {
+            "$ref": "#/$defs/input_processing_options"
         }
     ]
 }

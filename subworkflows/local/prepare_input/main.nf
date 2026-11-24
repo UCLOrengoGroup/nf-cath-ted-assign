@@ -4,18 +4,27 @@ include { CHUNKBYZIP as CHUNKBYZIP_HEAVY } from '../../../modules/local/chunkbyz
 include { RENUMBERPDB                    } from '../../../modules/local/renumberpdb/main'
 include { FILTERPDB                      } from '../../../modules/local/filterpdb/main'
 include { GETUNIPROT                     } from '../../../modules/local/getuniprot/main'
+include { UNTAR                          } from '../../../modules/nf-core/untar/main'
 
 workflow PREPARE_INPUT {
 
     take:
-    ch_zip_file    // channel: [ val(meta), path(zip) ], meta: [ id, structure_type ]
+    ch_zip_file      // channel: [ val(meta), path(zip) ], meta: [ id, structure_type ]
     chunk_size       // integer: maximum number of structures per chunk for validation and renumbering
     heavy_chunk_size // integer: maximum number of structures per segmentation chunk
     max_entries      // integer: maximum number of structures to process, or null for all
-    min_residues   // integer: structures with this many residues or fewer are rejected
-    max_residues   // integer: structures with this many residues or more are rejected
+    min_residues     // integer: structures with this many residues or fewer are rejected
+    max_residues     // integer: structures with this many residues or more are rejected
+    foldseek_db      // string: path to the target database for foldseek search
+    foldseek_lookup  // string: path to the lookup table for foldseek search
 
     main:
+
+    /*
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        LIST AND CHUNK INPUT STRUCTURES
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    */
 
     //
     // MODULE: List the structures in each input zip
@@ -52,7 +61,7 @@ workflow PREPARE_INPUT {
         .map { _id, tsv, meta -> [ meta, tsv ] }
 
     //
-    // MODULE: Split each zip's structures into chunks
+    // MODULE: Split each zip's structures and group them into chunks
     //
     CHUNKBYZIP ( ch_all_ids_mapping, chunk_size )
 
@@ -71,6 +80,12 @@ workflow PREPARE_INPUT {
             predicted: true
         }
 
+    /*
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        RENUMBER AND FILTER STRUCTURES
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    */
+
     //
     // MODULE: Renumber experimental structures; filtering then reads the renumbered zip
     //
@@ -87,10 +102,11 @@ workflow PREPARE_INPUT {
     //
     FILTERPDB ( ch_to_filter, min_residues, max_residues )
 
-    //
-    // MODULE: Fetch UniProt taxonomy, which only applies to predicted (AlphaFold DB) structures
-    //
-    GETUNIPROT ( ch_chunks.predicted.map { meta, ids, _zip -> [ meta, ids ] } )
+    /*
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        BUILD SEGMENTATION CHUNKS for TED_SEGMENTATION and POST_TED_PROCESSING
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    */
 
     // Per sample, a TSV of accepted structure ID, zip name and residue count: [ val(meta), path(tsv) ]
     // The zip is the input zip, or for experimental structures the renumbered zip of their chunk
@@ -134,10 +150,60 @@ workflow PREPARE_INPUT {
         .combine( ch_zips_by_name, by: [ 0, 1 ] )
         .map { _id, _zip_name, meta, ids, zip -> [ meta, ids, zip ] }
 
+    /*
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        TAXONOMY for FINAL_ASSEMBLY
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    */
+
+    //
+    // MODULE: Fetch UniProt taxonomy, which only applies to predicted (AlphaFold DB) structures
+    //
+    GETUNIPROT ( ch_chunks.predicted.map { meta, ids, _zip -> [ meta, ids ] } )
+
+    /*
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        Prepare FOLDSEEK TARGET DATABASE for FOLDSEEK
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    */
+
+    channel.value(file(foldseek_db))
+        .map { db ->
+            def db_name = db.name.replaceAll(/\.(tar\.gz|tgz)$/, '')
+            [ [id:db_name], db ] }
+        .set { ch_foldseek_db }
+
+    channel.value(file(foldseek_lookup))
+        .set { ch_foldseek_lookup }
+
+    //
+    // MODULE: Unpack the Foldseek target database
+    //
+    UNTAR ( ch_foldseek_db )
+
+    UNTAR.out.untar
+        .map { meta, dir ->
+            def lookup = dir.listFiles().find { f -> f.name.endsWith('.lookup') && !f.name.startsWith('._') }
+            if ( !lookup ) error("No Foldseek database (*.lookup) found in ${dir}")
+            [ meta + [ id: lookup.name - ~/\.lookup$/ ], dir ]
+        }
+        .first()
+        .set { ch_target_db }
+
     emit:
+    // Segmentation (TED_SEGMENTATION, POST_TED_PROCESSING)
     structures      = ch_heavy_chunks         // channel: [ val(meta), path(ids), path(zip) ], segmentation chunks of accepted structures
     filter_metadata = FILTERPDB.out.metadata  // channel: [ val(meta), path(tsv) ]
+
+    // Experimental structures (restore original numbering)
     resmaps         = RENUMBERPDB.out.resmaps // channel: [ val(meta), path(zip) ]
     renumber_errors = RENUMBERPDB.out.errors  // channel: [ val(meta), path(tsv) ]
+
+    // Taxonomy (FINAL_ASSEMBLY)
     uniprot         = GETUNIPROT.out.tsv      // channel: [ val(meta), path(tsv) ]
+
+    // Foldseek target database (FOLDSEEK)
+    target_db       = ch_target_db            // channel: [ val(meta), path(dir) ]
+    lookup_table    = ch_foldseek_lookup      // channel: val(url)
+
 }

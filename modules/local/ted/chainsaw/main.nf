@@ -9,8 +9,8 @@ process TED_CHAINSAW {
     tuple val(meta), path(ids), path(zip)
 
     output:
-    tuple val(meta), path("*/chopping_chainsaw_sorted.txt"), emit: chainsaw
-    tuple val(meta), path("*/chopping_chainsaw.log"), emit: log
+    tuple val(meta), path("*_chopping_chainsaw_sorted.txt"), emit: chainsaw
+    tuple val(meta), path("*_chopping_chainsaw.log"), emit: log
 
     when:
     task.ext.when == null || task.ext.when
@@ -46,13 +46,13 @@ process TED_CHAINSAW {
     mkdir -p output
 
     # ---------- Chainsaw (independent of Merizo/UniDoc) ----------
-    bash scripts/segment.sh -i ./filtered_pdbs -m chainsaw -o ./output > output/chopping_chainsaw.log 2>&1
+    bash scripts/segment.sh -i ./filtered_pdbs -m chainsaw -o ./output > ${prefix}_chopping_chainsaw.log 2>&1
     if test ! -s output/chopping_chainsaw.txt; then
-        echo "Chainsaw segmentation failed. Check log at output/chopping_chainsaw.log"
+        echo "Chainsaw segmentation failed. Check log at ${prefix}_chopping_chainsaw.log"
         exit 1
     fi
 
-    sort output/chopping_chainsaw.txt > output/chopping_chainsaw_sorted.txt
+    sort output/chopping_chainsaw.txt > ${prefix}_chopping_chainsaw_sorted.txt
 
     # ---------- Clean up filtered set ----------
     rm -rf filtered_pdbs
@@ -63,9 +63,8 @@ process TED_CHAINSAW {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     echo $args
-    
-    mkdir output
-    touch output/chopping_chainsaw_sorted.txt
-    touch output/chopping_chainsaw.log
+
+    touch ${prefix}_chopping_chainsaw_sorted.txt
+    touch ${prefix}_chopping_chainsaw.log
     """
 }

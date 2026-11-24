@@ -11,31 +11,28 @@ workflow TED_SEGMENTATION {
     main:
 
     //
-    // MODULE
+    // MODULE: Run TED chainsaw
     //
     TED_CHAINSAW ( ch_structures )
 
     //
-    // MODULE
+    // MODULE: Run TED merizo
     //
     TED_MERIZO ( ch_structures )
 
-    //
-    // MODULE
-    //
     TED_MERIZO.out.merizo
         .join(ch_structures)
-        .multiMap { meta, merizo, ids, zip -> 
+        .multiMap { meta, merizo, ids, zip ->
             structures: tuple( meta, ids, zip )
             merizo: tuple( meta, merizo )
         }
         .set { ch_unidoc }
 
+    //
+    // MODULE: Run TED unidoc
+    //
     TED_UNIDOC ( ch_unidoc.structures, ch_unidoc.merizo )
 
-    //
-    // MODULE
-    //
     TED_CHAINSAW.out.chainsaw
         .join(TED_MERIZO.out.merizo)
         .join(TED_UNIDOC.out.unidoc)
@@ -46,11 +43,19 @@ workflow TED_SEGMENTATION {
         }
         .set { ch_consensus }
 
-    // MODULE
+    //
+    // MODULE: Run TED consensus
+    //
     TED_CONSENSUS (
         ch_consensus.chainsaw,
         ch_consensus.merizo,
         ch_consensus.unidoc
     )
+
+emit:
+consensus = TED_CONSENSUS.out.consensus  // channel: [ val(meta), path(txt) ]
+chainsaw  = TED_CHAINSAW.out.chainsaw    // channel: [ val(meta), path(txt) ]
+merizo    = TED_MERIZO.out.merizo        // channel: [ val(meta), path(txt) ]
+unidoc    = TED_UNIDOC.out.unidoc        // channel: [ val(meta), path(txt) ]
 
 }
