@@ -1,4 +1,3 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "ted_chainsaw"
 description: write your description here
 keywords:
@@ -71,3 +70,27 @@ authors:
   - "@FernandoDuarteF"
 maintainers:
   - "@FernandoDuarteF"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/ted-chainsaw_unzip:7cea33baf8f8f330
+      build_id: bd-7cea33baf8f8f330_1
+      scan_id: sc-a04c09eff271efbc_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/ted-chainsaw_unzip:3531bc63163df74e
+      build_id: bd-3531bc63163df74e_1
+      scan_id: sc-60b6c54bda4b20c1_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/ted-chainsaw_unzip:22ecd1a434e15e4a
+      build_id: bd-22ecd1a434e15e4a_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/d7/d72c315c873b2fec6d997031dd573bc57ab15d4af8e56f9f08a19022de33ce1d/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/ted-chainsaw_unzip:6b89b50dd131236b
+      build_id: bd-6b89b50dd131236b_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/4d/4da6bacf1c331859fb2b52be30ac73e237bcc4a72c60ff81cc53641ac832d827/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/ted/chainsaw/.conda-lock/linux_amd64-bd-3531bc63163df74e_1.txt
+    linux/arm64:
+      lock_file: modules/local/ted/chainsaw/.conda-lock/linux_arm64-bd-7cea33baf8f8f330_1.txt

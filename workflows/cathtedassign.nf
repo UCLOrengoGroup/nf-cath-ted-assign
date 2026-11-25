@@ -6,6 +6,10 @@
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { PREPARE_INPUT          } from '../subworkflows/local/prepare_input/main.nf'
 include { TED_SEGMENTATION       } from '../subworkflows/local/ted_segmentation/main.nf'
+include { POST_TED_PROCESSING    } from '../subworkflows/local/post_ted_processing/main.nf'
+include { STRUCTURE_ANALYSIS     } from '../subworkflows/local/structure_analysis/main.nf'
+include { FOLDSEEK               } from '../subworkflows/local/foldseek/main.nf'
+include { FINAL_ASSEMBLY          } from '../subworkflows/local/final_assembly/main.nf'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -26,6 +30,10 @@ workflow CATHTEDASSIGN {
     max_entries
     min_chain_residues
     max_chain_residues
+    merizo_weights
+    foldseek_db
+    foldseek_lookup
+    foldseek_chunks_per_batch
     multiqc_config
     multiqc_logo
     multiqc_methods_description
@@ -37,7 +45,7 @@ workflow CATHTEDASSIGN {
     def ch_multiqc_files = channel.empty()
 
     //
-    // SUBWORKFLOW: List, chunk, renumber (experimental only) and filter input structures
+    // SUBWORKFLOW PREPARE_INPUT: List, chunk, renumber (experimental only) and filter input structures
     //
     PREPARE_INPUT (
         ch_samplesheet,
@@ -46,10 +54,62 @@ workflow CATHTEDASSIGN {
         max_entries,
         min_chain_residues,
         max_chain_residues,
+        merizo_weights,
+        foldseek_db,
+        foldseek_lookup
     )
 
+    //
+    // SUBWORKFLOW TED_SEGMENTATION: Segment structures into domains using TED
+    //
+    
+
     TED_SEGMENTATION (
+        PREPARE_INPUT.out.structures,
+        PREPARE_INPUT.out.merizo_weights
+    )
+
+    //
+    // SUBWORKFLOW POST_TED_PROCESSING: Post-process TED output to generate chopped domain PDBs and their sequence MD5s
+    //
+    POST_TED_PROCESSING (
+        TED_SEGMENTATION.out.consensus,
         PREPARE_INPUT.out.structures
+    )
+
+    //
+    // SUBWORKFLOW STRUCTURE_ANALYSIS: Analyze chopped PDBs and generate STRIDE summaries
+    //
+    STRUCTURE_ANALYSIS (
+        POST_TED_PROCESSING.out.chopped_pdb,
+        POST_TED_PROCESSING.out.domain_md5
+    )
+
+    //
+    // SUBWORKFLOW FOLDSEEK: Search chopped PDBs against a target database using Foldseek
+    //
+    FOLDSEEK (
+        POST_TED_PROCESSING.out.chopped_pdb,
+        PREPARE_INPUT.out.target_db,
+        PREPARE_INPUT.out.lookup_table,
+        foldseek_chunks_per_batch
+    )
+
+    //
+    // SUBWORKFLOW FINAL_ASSEMBLY: Assemble final output files and generate summary reports
+    //
+    FINAL_ASSEMBLY (
+        TED_SEGMENTATION.out.consensus,
+        POST_TED_PROCESSING.out.domain_md5,
+        STRUCTURE_ANALYSIS.out.stride_output,
+        TED_SEGMENTATION.out.merizo,
+        TED_SEGMENTATION.out.unidoc,
+        TED_SEGMENTATION.out.chainsaw,
+        STRUCTURE_ANALYSIS.out.globularity_output,
+        STRUCTURE_ANALYSIS.out.join_plddt_md5_output,
+        STRUCTURE_ANALYSIS.out.domainquality_output,
+        PREPARE_INPUT.out.uniprot,
+        FOLDSEEK.out.results
     )
 
     //

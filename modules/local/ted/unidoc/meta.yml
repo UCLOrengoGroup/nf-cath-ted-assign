@@ -1,4 +1,3 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "ted_unidoc"
 description: write your description here
 keywords:
@@ -71,3 +70,27 @@ authors:
   - "@FernandoDuarteF"
 maintainers:
   - "@FernandoDuarteF"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/ted-unidoc_unzip:701ac328429addf3
+      build_id: bd-701ac328429addf3_4
+      scan_id: sc-7accbefdfe0e15eb_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/ted-unidoc_unzip:988869d8d7f806fd
+      build_id: bd-988869d8d7f806fd_4
+      scan_id: sc-36f63ba51b0b4d44_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/ted-unidoc_unzip:33a6f2cf8d6ef966
+      build_id: bd-33a6f2cf8d6ef966_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/fb/fb9a382b9c952ebbfee7c1f3f77372ca1c49cd9169662920ab0dd4f05d145ddc/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/ted-unidoc_unzip:7a6f57d3fa7b4da2
+      build_id: bd-7a6f57d3fa7b4da2_4
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b9/b9b4d8b44d7fc1054b13972504191c5027dad0db1360350dbbcf0835588ee647/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/ted/unidoc/.conda-lock/linux_amd64-bd-701ac328429addf3_4.txt
+    linux/arm64:
+      lock_file: modules/local/ted/unidoc/.conda-lock/linux_arm64-bd-988869d8d7f806fd_4.txt

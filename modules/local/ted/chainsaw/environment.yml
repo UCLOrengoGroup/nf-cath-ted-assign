@@ -4,4 +4,5 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - "YOUR-TOOL-HERE"
+  - ted-chainsaw=0.1.8-0
+  - conda-forge::unzip=6.0

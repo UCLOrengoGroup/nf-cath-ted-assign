@@ -1,4 +1,3 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "ted_consensus"
 description: write your description here
 keywords:
@@ -71,3 +70,27 @@ authors:
   - "@FernandoDuarteF"
 maintainers:
   - "@FernandoDuarteF"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/ted-consensus:0.1.8-0--678d8848efd0513e
+      build_id: bd-678d8848efd0513e_1
+      scan_id: sc-9008707eaacc6c30_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/ted-consensus:0.1.8-0--56c5b76ab544f0cc
+      build_id: bd-56c5b76ab544f0cc_1
+      scan_id: sc-c6e5753e2df34527_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/ted-consensus:0.1.8-0--45f83f2ef8d3302f
+      build_id: bd-45f83f2ef8d3302f_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/34/34703bf9755ba2d792c768ab6040fe547b6c6e954310486f2e423b8eba61bbe7/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/ted-consensus:0.1.8-0--7afd2094ccd9b716
+      build_id: bd-7afd2094ccd9b716_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/77/77e48785d10921446285473ba90d2ae728139d81e254f8672d6d6ca5464cbdeb/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/ted/consensus/.conda-lock/linux_amd64-bd-56c5b76ab544f0cc_1.txt
+    linux/arm64:
+      lock_file: modules/local/ted/consensus/.conda-lock/linux_arm64-bd-678d8848efd0513e_1.txt
